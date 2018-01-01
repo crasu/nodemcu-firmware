@@ -58,8 +58,7 @@ void softuart_set_tx(uint8_t gpio_id)
     softuart.pin_tx = gpio_id;
 }
 
-//TODO ICACHE_RAM_ATTR
-static uint32_t softuart_intr_handler(uint32_t ret_gpio_status)
+static ICACHE_RAM_ATTR uint32_t softuart_intr_handler(uint32_t ret_gpio_status)
 {
     Softuart* s = &softuart;
     uint8_t level;
@@ -158,7 +157,7 @@ void softuart_init()
     NODE_DBG("SOFTUART bit_time is %d\r\n", s->bit_time);
 
 	//init tx pin
-    platform_gpio_mode(s->pin_rx, PLATFORM_GPIO_OUTPUT, PLATFORM_GPIO_PULLUP);
+    platform_gpio_mode(s->pin_tx, PLATFORM_GPIO_OUTPUT, PLATFORM_GPIO_PULLUP);
     GPIO_OUTPUT_SET(GPIO_ID_PIN(s->pin_tx), 1);
     uint32_t delay = 100000; //TODO needed?
     os_delay_us(delay);
@@ -371,7 +370,6 @@ bool softuart_on_data_cb(char *buf, size_t len)
     return true;
 }
 
-// uart.getconfig(id)
 static int softuart_getconfig(lua_State* L)
 {
     uint32_t databits = 8, parity = 0, stopbits = 1;
